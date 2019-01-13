@@ -81,7 +81,7 @@ BLOB* convolution(BLOB* input, conv_param_t* p){
     //if fully connected, the kernel size is set to the image size
     int Ky=(p->fc)?in->h:p->Ky;
     int Kx=(p->fc)?in->w:p->Kx;
-
+    info("Ky and Kx= %d%d\n", Ky, Kx);
     //create blob to hold output
     int height=(int)floor(((float)in->h - (float)Ky)/(float)p->Sy)+1;
     int width =(int)floor(((float)in->w - (float)Kx)/(float)p->Sx)+1;
@@ -110,7 +110,7 @@ BLOB* convolution(BLOB* input, conv_param_t* p){
 
     //load weights
     BLOB* w = load_weights(in, p);
-
+    
     //perform convolution
     for(int g=0;g<p->group;g++)
         for(int o=g*(out->d/p->group);o<(g+1)*(out->d/p->group);o++)
@@ -118,9 +118,14 @@ BLOB* convolution(BLOB* input, conv_param_t* p){
                 for(int m=0;m<out->h;m++)
                     for(int n=0;n<out->w;n++)
                         for(int k=0;k<Ky;k++)
-                            for(int l=0;l<Kx;l++)
+                            {
                                 //note: absolute starting i is subtracted for the weights, see load_weights function for more info
-                                blob_data(out,o,m,n)+=blob_data(in, i, m*p->Sy+k, n*p->Sx+l) * blob_data(w, o, i-(g*(in->d/p->group)), k*Kx + l);
+                                blob_data(out,o,m,n)+=blob_data(in, i, m*p->Sy+k, n*p->Sx) * blob_data(w, o, i-(g*(in->d/p->group)), k*Kx);
+				blob_data(out,o,m,n)+=blob_data(in, i, m*p->Sy+k, n*p->Sx+1) * blob_data(w, o, i-(g*(in->d/p->group)), k*Kx + 1);
+				blob_data(out,o,m,n)+=blob_data(in, i, m*p->Sy+k, n*p->Sx+2) * blob_data(w, o, i-(g*(in->d/p->group)), k*Kx + 2);
+				blob_data(out,o,m,n)+=blob_data(in, i, m*p->Sy+k, n*p->Sx+3) * blob_data(w, o, i-(g*(in->d/p->group)), k*Kx + 3);
+				blob_data(out,o,m,n)+=blob_data(in, i, m*p->Sy+k, n*p->Sx+4) * blob_data(w, o, i-(g*(in->d/p->group)), k*Kx + 4);
+			    }
 
     //free weights
     blob_free(w);
