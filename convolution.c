@@ -105,6 +105,7 @@ BLOB* convolution(BLOB* input, conv_param_t* p){
                     blob_data(out,o,m,n)=bias[o];
 
         //cleanup bias
+
         free(bias);
     }
 
@@ -112,11 +113,11 @@ BLOB* convolution(BLOB* input, conv_param_t* p){
     BLOB* w = load_weights(in, p);
     
     //perform convolution
+  for(int m=0;m<out->h;m++)
+    for(int n=0;n<out->w;n++)
     for(int g=0;g<p->group;g++)
         for(int o=g*(out->d/p->group);o<(g+1)*(out->d/p->group);o++)
-            for(int i=g*(in->d/p->group);i<(g+1)*(in->d/p->group);i++)
-                for(int m=0;m<out->h;m++)
-                    for(int n=0;n<out->w;n++)
+		 for(int i=g*(in->d/p->group);i<(g+1)*(in->d/p->group);i++)
                         for(int k=0;k<Ky;k++)
                             {
                                 //note: absolute starting i is subtracted for the weights, see load_weights function for more info
