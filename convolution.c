@@ -144,10 +144,10 @@ BLOB* convolution(BLOB* input, conv_param_t* p){
         float* var  = load_1d(p->bn_var, out->d);
 
         //batchnorm
+	for(int n=0;n<out->w;n++)
         for(int o=0;o<out->d;o++)
             for(int m=0;m<out->h;m++)
-                for(int n=0;n<out->w;n++)
-                    blob_data(out,o,m,n)= (blob_data(out,o,m,n) - mean[o])/sqrtf(var[o]+p->bn_eps);
+                blob_data(out,o,m,n)= (blob_data(out,o,m,n) - mean[o])/sqrtf(var[o]+p->bn_eps);
 
         //free mean and variance
         free(mean);
@@ -161,10 +161,10 @@ BLOB* convolution(BLOB* input, conv_param_t* p){
         float* scale_bias = load_1d(p->scale_bias, out->d);
 
         //scale
+	for(int n=0;n<out->w;n++)
         for(int o=0;o<out->d;o++)
             for(int m=0;m<out->h;m++)
-                for(int n=0;n<out->w;n++)
-                    blob_data(out,o,m,n) = blob_data(out,o,m,n)*scale[o] + scale_bias[o];
+                blob_data(out,o,m,n) = blob_data(out,o,m,n)*scale[o] + scale_bias[o];
 
         //free parameters
         free(scale);
