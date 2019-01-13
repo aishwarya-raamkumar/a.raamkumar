@@ -11,10 +11,10 @@ BLOB* pad(BLOB* in, int pad){
     BLOB* out = blob_calloc(in->d, in->h+2*pad, in->w+pad*2);
 
     //copy non-padded input into output blob
+ for(int x=0;x<in->w;x++)
     for(int z=0;z<in->d;z++)
        for(int y=0;y<in->h;y++)
-          for(int x=0;x<in->w;x++)
-              blob_data(out,z,y+pad,x+pad)= blob_data(in,z,y,x);
+           blob_data(out,z,y+pad,x+pad)= blob_data(in,z,y,x);
 
     //return pointer to padded blob
     return out;
